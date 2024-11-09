@@ -49,3 +49,4 @@ vite.generated.ts
 tsconfig.json
 package-lock.json
 package.json
+/src/main/frontend/generated
