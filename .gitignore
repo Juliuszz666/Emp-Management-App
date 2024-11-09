@@ -39,3 +39,13 @@ out/
 
 ### Dotenv ###
 .env
+
+### Gradle ###
+.gradle/
+build/
+types.d.ts
+vite.config.ts
+vite.generated.ts
+tsconfig.json
+package-lock.json
+package.json
