@@ -2,31 +2,44 @@ package com.julian.employeemanagementapp.components.startview;
 
 import com.julian.employeemanagementapp.security.AuthenticateLogin;
 import com.julian.employeemanagementapp.security.LoginData;
+import com.julian.employeemanagementapp.security.SessionManager;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.data.binder.Binder;
 
 public class LoginForm extends FormLayout {
 
-    private final Binder<LoginData> binder = new Binder<>(LoginData.class);
+    private final LoginInput loginInput;
+    private final PasswordInput passwordInput;
+    private final LoginButton loginButton;
+    private final Binder<LoginData> credentialsBean;
+    private final LoginData loginData;
+
+    private void setUpBean() {
+        credentialsBean.setBean(loginData);
+        credentialsBean.bind(loginInput, LoginData::getUsername, LoginData::setUsername);
+        credentialsBean.bind(passwordInput, LoginData::getPassword, LoginData::setPassword);
+    }
+
+    private void setUpComponents() {
+        add(loginInput, passwordInput, loginButton);
+        loginButton.addClickListener(event -> {
+            if(AuthenticateLogin.authenticate(loginData)) {
+                SessionManager.startAndSetSession(loginData.getUsername());
+                getUI().ifPresent(ui -> ui.navigate("main-view"));
+            }
+        });
+    }
 
     public LoginForm() {
         setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1));
         setClassName("login-form");
-        LoginInput loginInput = new LoginInput();
-        PasswordInput passwordInput = new PasswordInput();
-        LoginButton loginButton = new LoginButton();
+        loginInput = new LoginInput();
+        passwordInput = new PasswordInput();
+        loginButton = new LoginButton();
+        loginData = new LoginData("", "");
+        credentialsBean = new Binder<>(LoginData.class);
 
-        LoginData loginData = new LoginData("", "");
-
-        binder.setBean(loginData);
-        binder.bind(loginInput, LoginData::getUsername, LoginData::setUsername);
-        binder.bind(passwordInput, LoginData::getPassword, LoginData::setPassword);
-
-        add(loginInput, passwordInput, loginButton);
-        loginButton.addClickListener(e -> {
-            boolean x = AuthenticateLogin.authenticate(binder.getBean());
-            System.out.println(x);
-        });
+        setUpBean();
+        setUpComponents();
     }
 }
