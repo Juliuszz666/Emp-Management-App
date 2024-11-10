@@ -7,10 +7,12 @@ import com.vaadin.flow.component.textfield.TextField;
 
 public class LoginInput extends TextField {
 
+    private final static int MAX_LENGTH = 20;
+
     public LoginInput() {
         setPlaceholder("Login");
         addClassName("login-input");
         addClassName("input-general-class");
-        setMaxLength(20); // remove magic number
+        setMaxLength(MAX_LENGTH); // remove magic number
     }
 }
